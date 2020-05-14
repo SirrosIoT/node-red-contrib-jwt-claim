@@ -1,0 +1,20 @@
+{
+  "name": "node-red-contrib-jwt-claim",
+  "version": "0.0.1",
+  "description": "JWT Validator and Signer base claim",
+  "main": "index.js",
+  "author": "Leonardo Pavanello",
+  "license": "ISC",
+  "keywords": [
+    "jwt",
+    "claim"
+  ],
+  "dependencies": {
+    "jsonwebtoken": "^8.2.1"
+  },
+  "node-red": {
+    "nodes": {
+      "jwt-claim": "jwt-claim.js"
+    }
+  }
+}

@@ -1,0 +1,220 @@
+<script type="text/html" data-template-name="jwt-conf">
+    <div class="form-row">
+      <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+      <input type="text" id="node-config-input-name" placeholder="Name" />
+    </div>
+    <div class="form-row">
+      <label for="node-config-input-audience"><i class="fa fa-user"></i> Audience</label>
+      <input type="text" id="node-config-input-audience" placeholder="Audience" />
+    </div>
+    <div class="form-row">
+        <label for="node-config-input-alg"><i class="fa fa-unlock"></i> Algorithm:</label>
+        <select id="node-config-input-alg">
+            <option value="HS256" selected>HS256</option>
+            <option value="HS384">HS384</option>
+            <option value="HS512">HS512</option>
+        </select>
+  </div>
+    <div class="form-row">
+      <label for="node-config-input-secret"><i class="fa fa-lock"></i> Secret</label>
+      <input type="password" id="node-config-input-secret" placeholder="Secret" />
+    </div>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType("jwt-conf", {
+        category: "config",
+        inputs: 0,
+        outputs: 0,
+        defaults: {
+            name: {
+                value: ""
+            },
+            audience: {
+                value: ""
+            },
+            alg: { value: ["HS256"] },
+        },
+        credentials: {
+            secret: {
+                type: "password"
+            }
+        },
+        label: function () {
+            return this.name || "Jwt Conf";
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="jwt verify">
+  <input type="password" style="width: 0;height: 0; visibility: hidden;position:absolute;left:0;top:0;"/>
+  <div class="form-row">
+        <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+        <input type="text" id="node-input-name" placeholder="Name">
+  </div>
+  <div class="form-row">
+        <label for="node-input-role"><i class="fa fa-shield"></i> Role</label>
+        <input type="text" id="node-input-role" placeholder="Role">
+  </div>
+  <div class="form-row">
+    <label for="node-input-jwtConf"><i class="fa fa-cog"></i> Settings</label>
+    <input type="text" id="node-input-jwtConf" />
+  </div>
+</script>
+
+<script type="text/html" data-help-name="jwt verify">
+   <p>Verify JWT signature JWT</p>
+   <p>Verify and store result on msg.dataAuth.</p>
+    
+    <h3>Inputs</h3>
+    <dl class="message-properties">
+        <dt>
+            token
+            <span class="property-type">string</span>
+        </dt>
+        <dd> the token of the request on authorization header "Bearer token". </dd>
+    </dl>
+
+    <h3>Outputs</h3>
+    <ol class="node-ports">
+        <li>Standard output
+        <dl class="message-properties">
+            <dt>
+                dataAuth
+                <span class="property-type">object</span>
+            </dt>
+            <dd>decoded payload</dd>
+        </dl>
+    </li>
+
+    <li>Standard error
+        <dl class="message-properties">
+            <dt>
+                payload
+                <span class="property-type">string</span>
+            </dt>
+            <dd>error response from JWT lib</dd>
+        </dl>
+    </li>
+</ol>
+
+    <h3>Details</h3>
+    <p>Algorithms HS256, HS384, HS512 use the <code>secret</code> property or the <code>NODE_RED_NODE_JWT_CLAIM_SECRET</code> environment variable.</p>
+
+    <h3>References</h3>
+    <ul>
+        <li><a href="https://github.com/auth0/node-jsonwebtoken">node-jsonwebtoken</a> - documentation for JWT library.</li>
+    </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('jwt verify', {
+        category: "authentication",
+        icon: "font-awesome/fa-shield",
+        color: "#ff7043",
+        inputs: 1,
+        outputs: 1,
+        defaults: {
+            name: { value: "" },
+            role: { value: "" },
+            jwtConf: {
+                type: "jwt-conf"
+            }
+        },
+        label: function () {
+            return this.name || "JWT Verify"
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="jwt sign">
+    <div class="form-row">
+          <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+          <input type="text" id="node-input-name" placeholder="Name">
+    </div>
+    <div class="form-row">
+      <label for="node-input-jwtConf"><i class="fa fa-cog"></i> Settings</label>
+      <input type="text" id="node-input-jwtConf" />
+    </div>
+</script>
+
+<script type="text/html" data-help-name="jwt sign">
+    <p>Sign JWT </p>
+     
+     <h3>Inputs</h3>
+     <dl class="message-properties">
+         <dt>
+             payload
+             <span class="property-type">string|object</span>
+         </dt>
+         <dd> the content of <code>msg.payload</code>. </dd>
+     </dl>
+
+     <dl class="message-properties">
+        <dt>
+            roles
+            <span class="property-type">array of string</span>
+        </dt>
+        <dd> the content of <code>msg.payload.roles</code>. (optional)</dd>
+    </dl>
+
+    <dl class="message-properties">
+        <dt>
+            audience
+            <span class="property-type">string</span>
+        </dt>
+        <dd> the content of <code>msg.aud</code> or the setting on node. </dd>
+    </dl>
+
+    <dl class="message-properties">
+        <dt>
+            expiresIn
+            <span class="property-type">string</span>
+        </dt>
+        <dd> the content of <code>msg.exp</code> or 86400. </dd>
+    </dl>
+ 
+     <h3>Outputs</h3>
+     <ol class="node-ports">
+         <li>Standard output
+         <dl class="message-properties">
+             <dt>
+                 token
+                 <span class="property-type">string</span>
+             </dt>
+             <dd>encoded on msg.payload </dd>
+         </dl>
+     </li>
+ </ol>
+ 
+     <h3>Details</h3>
+     <p>Algorithms HS256, HS384, HS512 use the <code>secret</code> property or the <code>NODE_RED_NODE_JWT_CLAIM_SECRET</code> environment variable.</p>
+
+     <p>Audience use the <code>msg.aud</code> property or the <code>setting on node</code>.</p>
+
+     <p>ExpiresIn use the <code>msg.exp</code> property or the default <code>86400</code>.</p>
+ 
+     <h3>References</h3>
+     <ul>
+         <li><a href="https://github.com/auth0/node-jsonwebtoken">node-jsonwebtoken</a> - documentation for JWT library.</li>
+     </ul>
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('jwt sign', {
+        category: "authentication",
+        icon: "font-awesome/fa-shield",
+        color: "#ff7043",
+        inputs: 1,
+        outputs: 1,
+        defaults: {
+            name: { value: "" },
+            jwtConf: {
+                type: "jwt-conf"
+            }
+        },
+        label: function () {
+            return this.name || "JWT Sign"
+        }
+    });
+</script>
