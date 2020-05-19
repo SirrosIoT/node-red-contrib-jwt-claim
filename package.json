@@ -16,5 +16,8 @@
     "nodes": {
       "jwt-claim": "jwt-claim.js"
     }
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
