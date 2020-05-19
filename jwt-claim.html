@@ -171,7 +171,7 @@
             expiresIn
             <span class="property-type">string</span>
         </dt>
-        <dd> the content of <code>msg.exp</code> or 86400. </dd>
+        <dd> the content of <code>msg.exp</code> or 86400. 0 for never expires </dd>
     </dl>
  
      <h3>Outputs</h3>
@@ -182,7 +182,7 @@
                  token
                  <span class="property-type">string</span>
              </dt>
-             <dd>encoded on msg.payload </dd>
+             <dd>encoded on msg.payload.token </dd>
          </dl>
      </li>
  </ol>

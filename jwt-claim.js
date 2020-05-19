@@ -126,12 +126,15 @@ module.exports = function (RED) {
                 else if (node.config.audience)
                     options['audience'] = node.config.audience;
 
-                if (msg.exp)
-                    options['expiresIn'] = msg.exp;
-                else
+                if (msg.exp) {
+                    if (msg.exp > 0)
+                        options['expiresIn'] = msg.exp;
+                }
+                else {
                     options['expiresIn'] = 86400;
+                }
 
-                msg.payload = jwtLib.sign(msg.payload, secret, options);
+                msg.payload['token'] = jwtLib.sign(msg.payload, secret, options);
                 node.send([msg, null]);
             });
         }

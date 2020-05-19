@@ -17,7 +17,9 @@
       "jwt-claim": "jwt-claim.js"
     }
   },
-  "publishConfig": {
-    "registry": "https://npm.pkg.github.com/"
+  "homepage": "https://github.com/SirrosIoT/node-red-contrib-jwt-claim/packages",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SirrosIoT/node-red-contrib-jwt-claim/packages"
   }
 }
