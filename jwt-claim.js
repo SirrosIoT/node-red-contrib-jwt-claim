@@ -43,16 +43,25 @@ module.exports = function (RED) {
 
                 let bearer;
 
-                if (msg.req.get('authorization') !== undefined) {
-                    var authz = msg.req.get('authorization').split(' ');
+                if (msg.req.get('authorization') !== undefined || msg.req.get('Authorization') !== undefined) {
+
+                    var authz = msg.req.get('authorization');
+
+                    if (!authz)
+                        var authz = msg.req.get('Authorization');
+
+                    authz = authz.split(' ');
+
                     if (authz.length == 2 && authz[0] === 'Bearer') {
                         bearer = authz[1];
                     }
+                    else
+                        bearer = authz[0];
                 }
-                else if (msg.req.query.access_token !== undefined) {
+                else if (msg.req.query.access_token != undefined &&  msg.req.query.access_token != "") {
                     bearer = msg.req.query.access_token;
                 }
-                else if (msg.req.body !== undefined && msg.req.body.access_token !== undefined) {
+                else if (msg.req.body != undefined && msg.req.body.access_token != undefined && msg.req.body.access_token != "") {
                     bearer = msg.req.body.access_token;
                 }
                 else {
@@ -60,8 +69,7 @@ module.exports = function (RED) {
 
                     msg['payload'] = error;
                     msg['statusCode'] = error.statusCode;
-                    node.error(error.message, msg);
-                    return;
+                    return node.error(error.message, msg);
                 }
 
                 let secret = process.env.NODE_RED_NODE_JWT_CLAIM_SECRET || node.config.credentials.secret;
